@@ -1,0 +1,98 @@
+# Define the task to create the research plan.
+create_research_plan:
+  description: >
+    Analyze the research query "{user_query}" in depth and break it down into MAIN topics 
+    (core essential areas that directly answer the query) and SECONDARY topics (supporting 
+    areas that provide context, background, or complementary information). Consider multiple 
+    angles: technical aspects, practical applications, theoretical foundations, historical 
+    context, current state, future trends, and potential controversies. Identify key questions 
+    for each topic that need to be answered. Prioritize topics based on relevance to answering 
+    the original query. Consider what the user likely wants to know and what they might not 
+    know to ask about.
+  expected_output:  >
+    A comprehensive research plan containing: 
+    1) MAIN TOPICS: 3-5 core research areas crucial for directly answering the query, with 
+       specific sub-questions for each
+    2) SECONDARY TOPICS: 2-4 supporting research areas that provide important context and depth
+    3) Key questions organized by topic that guide the research process
+    4) Research priorities ranked by importance to answering the user's query
+    5) Success criteria: what information must be gathered for a complete answer
+    6) Potential challenges or gaps that might be encountered
+    The plan should be structured to enable parallel research while ensuring comprehensive coverage.
+  agent: research_planner
+
+# Define the task to research main topics.
+research_main_topics:
+  description: >
+    Using the research plan, focus on the MAIN topics and search the internet
+    to collect comprehensive information. Verify information across multiple sources
+    and cite all sources used.
+  expected_output: >
+    Comprehensive research data for MAIN topics including: 1) Detailed
+    information for each main research topic with citations, 2) Key facts and statistics,
+    3) Multiple source perspectives, 4) Source credibility notes
+  agent: topic_researcher
+  context:
+  - create_research_plan
+
+# Define the task to research secondary topics.
+research_secondary_topics:
+  description: >
+    Using the research plan, focus on the SECONDARY topics and search the
+    internet to collect supporting information. Verify information across multiple
+    sources and cite all sources used.
+  expected_output: >
+    Comprehensive research data for SECONDARY topics including: 1)
+    Supporting information for each secondary research topic with citations, 2) Contextual
+    facts and background, 3) Multiple source perspectives, 4) Source credibility notes
+  agent: topic_researcher
+  context:
+  - create_research_plan
+
+# Define the task to validate main topics.
+validate_main_topics:
+  description: >
+    Review all collected MAIN topic research data for accuracy and consistency.
+    Identify any conflicting information, potential misinformation, or gaps that need
+    addressing. Flag areas requiring human review if needed.
+  expected_output: >
+    Main topics quality assessment report with all the original information you got, 
+    include numbers we can use to plot chart plus: 1) Verified facts
+    vs. questionable information, 2) Consistency check results, 3) Source reliability
+    ratings, 4) Validated main topic data ready for report generation
+  agent: fact_checker
+  context:
+  - research_main_topics
+
+# Define the task to validate secondary topics.
+validate_secondary_topics:
+  description: >
+    Review all collected SECONDARY topic research data for accuracy and
+    consistency. Identify any conflicting information, potential misinformation, or
+    gaps that need addressing. Flag areas requiring human review if needed.
+  expected_output: >
+    Secondary topics quality assessment report with all the original information you got
+    include number we can use to plot chart plus: 1) Verified supporting
+    facts vs. questionable information, 2) Consistency check results, 3) Source reliability
+    ratings, 4) Validated secondary topic data ready for report generation
+  agent: fact_checker
+  context:
+  - research_secondary_topics
+
+# Define the task to write the final report.
+write_final_report:
+  description: >
+    Create a comprehensive report that answers the original query "{user_query}"
+    using all validated research data from both MAIN and SECONDARY topic branches.
+    Structure it with clear sections, include citations, and provide actionable insights.
+    Use the custom tool to create intuitive charts based on the verified information.
+    
+  expected_output: >
+    A final research report containing: 1) Executive summary, 2) Detailed
+    findings that answer the user query using main topics, 3) Supporting context from
+    secondary topics, 4) Complete source citations, 5) Key insights and recommendations.
+    Must include Summary, Insights/Recommendations, and Citations sections.
+  agent: report_writer
+  context:
+  - validate_main_topics
+  - validate_secondary_topics
