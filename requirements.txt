@@ -1,0 +1,26 @@
+# Deep Research Flow - Conda Environment Requirements
+# Install these in your conda environment before running 'crewai run'
+
+# Core Dependencies
+crewai
+crewai_tools
+litellm
+matplotlib
+pandas
+qdrant-client
+seaborn
+openai
+langchain-ollama
+langchain-community
+
+# Additional Dependencies
+pydantic
+python-dotenv
+pyyaml
+
+# Streamlit for Web Interface
+streamlit
+
+# Development Tools (Optional)
+ipython
+jupyter
